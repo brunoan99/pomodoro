@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Center, Header, Timer } from "../components";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { Button, Center, Header, Timer } from "../components";
 
 const getNewTime = (time: string): string => {
   const [minute, second] = time.split(":");
@@ -24,41 +24,51 @@ export const HomePage = () => {
   const [time, setTime] = useState("25:00");
   const [breakCount, setBreakCount] = useState(0);
   const [state, setState] = useState("Focus");
+  const audio = useMemo(() => new Audio('../../../public/assets/audio/alarm-clock.mp3'), []);
+  audio.loop = false;
+
+  const transition = useCallback((title: string, state: string, time: string, breakCount: number) => {
+    document.title = title;
+    setState(state);
+    setTime(time);
+    setTicking(false);
+    setBreakCount(breakCount);
+  }, [])
 
   useEffect(() => {
     const timer = setTimeout(() => {
-
       if (ticking) {
         const newTime = getNewTime(time);
-        if (newTime != "00:00") setTime(newTime);
-        else if (state != "Focus") {
-          setState("Focus");
-          setTime("25:00");
-          setTicking(false);
-        } else if (breakCount < 3) {
-          setBreakCount(breakCount + 1)
-          setState("Short Break");
-          setTime("05:00");
-          setTicking(false);
+        if (newTime != "00:00") {
+          document.title = newTime
+          setTime(newTime);
+        } else if (state != "Focus") {
+          audio.play()
+          transition("Focus Time", "Focus", "25:00", breakCount);
+        } else if ((breakCount % 4) < 3) {
+          audio.play()
+          transition("Short Break Time", "Short Break", "05:00", breakCount + 1);
         } else {
-          setBreakCount(0);
-          setState("Long Break");
-          setTime("15:00");
-          setTicking(false);
+          audio.play()
+          transition("Long Break Time", "Long Break", "15:00", breakCount + 1);
         }
       }
-    }, 1000)
+    }, 1e3)
     return () => clearTimeout(timer)
-  }, [time, ticking, breakCount, state])
+  }, [time, ticking, breakCount, state, audio, transition])
+
+  const buttonMessage = ticking ? "Pause" : "Resume";
+  const buttonOnClick = () => setTicking(!ticking);
 
   return (
-      <div className="min-h-screen bg-[#E9E9E9] grid grid-cols-1 grid-rows-[64px_minmax(64px,_1fr)]">
+      <div className="min-h-screen bg-[#E9E9E9] grid grid-cols-1 grid-rows-[64px,1fr,200px]">
           <Header/>
           <Center
-            children={<Timer time={time} msg={state} />}
+            child={<Timer time={time} msg={state} breaks={breakCount}/>}
           />
-          <button onClick={() => setTicking(false)}>pause</button>
-          <button onClick={() => setTicking(true)}>resume</button>
+          <Center
+            child={<Button message={buttonMessage} onClick={buttonOnClick}/>}
+          />
       </div>
   );
 }

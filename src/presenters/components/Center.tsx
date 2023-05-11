@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 
-export const Center = ({ children }: { children: ReactNode }) => (
+export const Center = ({ child: child }: { child: ReactNode }) => (
   <div className="flex flex-col justify-center items-center">
-    {children}
+    {child}
   </div>
 )
