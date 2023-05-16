@@ -1,7 +1,27 @@
-export const Header = () => (
-  <header className="bg-[#D9D9D9] w-screen h-[64px] flex shadow-xl">
-    <h1 className="pl-[40px] self-center text-2xl font-normal">
-      My Pomodoro
-    </h1>
-  </header>
-)
+import { ReactNode } from "react";
+
+type HeaderStyles = {
+  bgColor?: string,
+  width?: string,
+  height?: string,
+  shadow?: string,
+}
+
+export const Header = ({
+    child,
+    styles,
+  }: {
+    child?: ReactNode
+    styles?: HeaderStyles,
+  }) => {
+  const Background = "bg-[" + (styles?.bgColor || "#FFF") + "]";
+  const Width = styles?.width || "w-screen";
+  const Height = styles?.height || "h-auto";
+  const Shadow = styles?.shadow;
+  const Child = child || <></>
+  const Styles = [Background, Width, Height, Shadow, "flex"].join(" ");
+  return (
+  <header className={Styles}>
+    {Child}
+  </header>)
+}

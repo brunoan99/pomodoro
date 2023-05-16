@@ -1,7 +1,7 @@
-import { ReactNode } from "react"
+import { ReactElement } from "react"
 
-export const Row = ({ childrens }: { childrens: ReactNode[] }) => (
-  <div className="flex flex-row justify-around items-center">
+export const Row = ({ childrens }: { childrens: ReactElement[] }) => (
+  <div className="flex flex-row justify-around items-center gap-x-10">
     {childrens}
   </div>
 )

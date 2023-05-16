@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Button, Center, Header, Timer } from "../components";
+import { Button, Center, Column, Header, Row, Screen, Timer, Title } from "../components";
 
 const getNewTime = (time: string): string => {
   const [minute, second] = time.split(":");
@@ -17,23 +17,59 @@ const getNewTime = (time: string): string => {
     const secondString = "59";
     return minuteString + ":" + secondString;
   }
-}
+};
+
+type state = "Focus" | "Short" | "Long";
+const stateList = ["Focus", "Short", "Long"] as state[];
+
+const timeOfState = {
+  "Focus": "25:00",
+  "Short": "5:00",
+  "Long": "15:00",
+};
+
+const messageOfState = {
+  "Focus": "Focus",
+  "Short": "Short Break",
+  "Long": "Long Break",
+};
+
+const titleOfState = {
+  "Focus": "Focus Time!",
+  "Short": "Short Break!",
+  "Long": "Long Break!",
+};
 
 export const HomePage = () => {
-  const [ticking, setTicking] = useState(false);
-  const [time, setTime] = useState("25:00");
+  const windowHeight = window.innerHeight;
+
+  const headerHeight = "h-[64px]"
+  const buttonsHeight = "h-[200px]"
+  const timerHeight = "h-[" + (windowHeight - 64 - 200) + "px]";
+
   const [breakCount, setBreakCount] = useState(0);
-  const [state, setState] = useState("Focus");
-  const audio = useMemo(() => new Audio('../../../public/assets/audio/alarm-clock.mp3'), []);
+  const [state, setState] = useState<state>(stateList[0]);
+  const [time, setTime] = useState(timeOfState[state]);
+  const [message, setMessage] = useState(messageOfState[state]);
+  const [ticking, setTicking] = useState(false);
+
+  const audio = useMemo(() => new Audio('assets/audio/alarm-clock.mp3'), []);
   audio.loop = false;
 
-  const transition = useCallback((title: string, state: string, time: string, breakCount: number) => {
-    document.title = title;
+  const transition = useCallback((state: state, breakCount: number) => {
     setState(state);
-    setTime(time);
+    document.title = titleOfState[state];
+    setMessage(messageOfState[state]);
+    setTime(timeOfState[state]);
     setTicking(false);
     setBreakCount(breakCount);
-  }, [])
+  }, []);
+
+  const nextState = useCallback((state: state, breakCount: number): state => {
+    if (state === "Focus" && ((breakCount % 4) < 3)) return "Short"
+    else if (state === "Focus") return "Long"
+    return "Focus"
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -42,33 +78,71 @@ export const HomePage = () => {
         if (newTime != "00:00") {
           document.title = newTime
           setTime(newTime);
-        } else if (state != "Focus") {
-          audio.play()
-          transition("Focus Time", "Focus", "25:00", breakCount);
-        } else if ((breakCount % 4) < 3) {
-          audio.play()
-          transition("Short Break Time", "Short Break", "05:00", breakCount + 1);
         } else {
           audio.play()
-          transition("Long Break Time", "Long Break", "15:00", breakCount + 1);
+          const newState = nextState(state, breakCount);
+          const newBreakCount = newState != "Focus"
+                              ? breakCount + 1
+                              : breakCount;
+          transition(newState, newBreakCount);
         }
       }
-    }, 1e3)
+    }, 1)
     return () => clearTimeout(timer)
-  }, [time, ticking, breakCount, state, audio, transition])
+  }, [time, ticking, breakCount, state, audio, nextState, transition]);
 
-  const buttonMessage = ticking ? "Pause" : "Resume";
-  const buttonOnClick = () => setTicking(!ticking);
+  const playButtonMessage = ticking ? "Pause" : "Resume";
+  const playButtonOnClick = () => setTicking(!ticking);
+
+  const nextButtonMessage = "Next"
+  const nextButtonOnClick = () => {
+    const newState = nextState(state, breakCount);
+    const newBreakCount = newState != "Focus"
+                        ? breakCount + 1
+                        : breakCount;
+    transition(newState, newBreakCount);
+  }
 
   return (
-      <div className="min-h-screen bg-[#E9E9E9] grid grid-cols-1 grid-rows-[64px,1fr,200px]">
-          <Header/>
-          <Center
-            child={<Timer time={time} msg={state} breaks={breakCount}/>}
-          />
-          <Center
-            child={<Button message={buttonMessage} onClick={buttonOnClick}/>}
-          />
-      </div>
+    <>
+      <Screen
+        styles={{ bgColor: "#E9E9E9" }}
+        child={
+          <Column
+            childrens={[
+              <Header
+                key={"header"}
+                styles={{ height: headerHeight, shadow: "shadow-xl", bgColor: "#D9D9D9" }}
+                child={<Title child={"My Pomodoro"} />}
+              />,
+              <Center
+                key={"timer"}
+                styles={{ height: timerHeight }}
+                child={<Timer
+                  time={time}
+                  msg={message}
+                  breaks={breakCount}/>}
+              />,
+              <Center
+                key={"buttons"}
+                styles={{ height: buttonsHeight }}
+                child={
+                  <Row
+                    childrens={[
+                      <Button
+                        key={"play-button"}
+                        child={<p>{playButtonMessage}</p>}
+                        onClick={playButtonOnClick}/>,
+                      <Button
+                        key={"next-button"}
+                        child={<p>{nextButtonMessage}</p>}
+                        onClick={nextButtonOnClick}/>
+                    ]}
+                  />}
+              />
+            ]}
+          />}
+      />
+    </>
   );
 }

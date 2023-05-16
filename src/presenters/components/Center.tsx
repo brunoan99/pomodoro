@@ -1,7 +1,21 @@
-import { ReactNode } from "react";
+import { ReactElement } from "react";
 
-export const Center = ({ child: child }: { child: ReactNode }) => (
-  <div className="flex flex-col justify-center items-center">
-    {child}
-  </div>
-)
+type CenterStyles = {
+  height?: string;
+}
+
+export const Center = ({
+    child,
+    styles,
+  }: {
+    child: ReactElement
+    styles?: CenterStyles
+  }) => {
+  const Height = styles?.height || "h-auto"
+  const Styles = [Height, "flex", "justify-center", "items-center"].join(" ")
+  return (
+    <div className={Styles}>
+      {child}
+   </div>
+  )
+}
