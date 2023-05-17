@@ -84,7 +84,7 @@ export const HomePage = () => {
           transition(newState, newBreakCount);
         }
       }
-    }, 1)
+    }, 1e3)
     return () => clearTimeout(timer)
   }, [time, ticking, breakCount, state, nextState, transition]);
 
