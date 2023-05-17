@@ -1,5 +1,7 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { Button, Center, Column, Header, Row, Screen, Timer, Title } from "../components";
+"use client";
+
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Button, Center, Column, Header, Row, Screen, Timer, Title } from '@/presenters/components'
 
 const getNewTime = (time: string): string => {
   const [minute, second] = time.split(":");
@@ -41,20 +43,16 @@ const titleOfState = {
 };
 
 export const HomePage = () => {
-  const windowHeight = window.innerHeight;
 
-  const headerHeight = "h-[64px]"
-  const buttonsHeight = "h-[200px]"
-  const timerHeight = "h-[" + (windowHeight - 64 - 200) + "px]";
+  const headerHeight = "h-[64px]";
+  const buttonsHeight = "h-[200px]";
+  const timerHeight = "h-[673px]";
 
   const [breakCount, setBreakCount] = useState(0);
   const [state, setState] = useState<state>(stateList[0]);
   const [time, setTime] = useState(timeOfState[state]);
   const [message, setMessage] = useState(messageOfState[state]);
   const [ticking, setTicking] = useState(false);
-
-  const audio = useMemo(() => new Audio('assets/audio/alarm-clock.mp3'), []);
-  audio.loop = false;
 
   const transition = useCallback((state: state, breakCount: number) => {
     setState(state);
@@ -79,7 +77,6 @@ export const HomePage = () => {
           document.title = newTime
           setTime(newTime);
         } else {
-          audio.play()
           const newState = nextState(state, breakCount);
           const newBreakCount = newState != "Focus"
                               ? breakCount + 1
@@ -89,7 +86,7 @@ export const HomePage = () => {
       }
     }, 1)
     return () => clearTimeout(timer)
-  }, [time, ticking, breakCount, state, audio, nextState, transition]);
+  }, [time, ticking, breakCount, state, nextState, transition]);
 
   const playButtonMessage = ticking ? "Pause" : "Resume";
   const playButtonOnClick = () => setTicking(!ticking);
@@ -97,16 +94,13 @@ export const HomePage = () => {
   const nextButtonMessage = "Next"
   const nextButtonOnClick = () => {
     const newState = nextState(state, breakCount);
-    const newBreakCount = newState != "Focus"
-                        ? breakCount + 1
-                        : breakCount;
-    transition(newState, newBreakCount);
+    transition(newState, breakCount);
   }
 
   return (
     <>
       <Screen
-        styles={{ bgColor: "#E9E9E9" }}
+        styles={{ bgColor: "bg-[#E9E9E9]" }}
         child={
           <Column
             childrens={[

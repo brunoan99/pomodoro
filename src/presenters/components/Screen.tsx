@@ -12,7 +12,7 @@ export const Screen = (
     child: ReactElement,
     styles?: ScreenStyles
   }) => {
-  const Background = "bg-[" + (styles?.bgColor || "#FFF") + "]";
+  const Background = styles?.bgColor || "bg-[#FFF]";
   const Styles = ["min-h-screen", Background].join(" ")
   return (
     <div className={Styles}>
