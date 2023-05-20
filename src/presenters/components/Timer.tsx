@@ -1,6 +1,6 @@
 export const Timer = ({ time, msg }: { time: string, msg: string }) => (
   <div className="flex justify-center items-center h-[63vh]">
-    <div className="bg-secondary-color min-w-[250px] w-[30vw] min-h-[250px] h-[30vw] rounded-full shadow-xl">
+    <div className="bg-secondary-color min-w-[250px] w-[20vw] max-w-[400px] min-h-[250px] h-[20vw] max-h-[400px] rounded-full shadow-xl">
       <div className="mt-[1vh] h-full w-full flex flex-col justify-center text-center align-middle">
         <p className="antialiased select-none tracking-[4px] text-3xl text-center text-primary-font-color">
           {time.split('').join(' ')}
