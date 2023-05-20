@@ -1,4 +1,5 @@
 export { Button } from "./Button"
+export { ButtonCenter } from "./ButtonCenter"
 export { Center } from "./Center"
 export { Column } from "./Column"
 export { Header } from "./Header"

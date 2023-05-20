@@ -1,14 +1,12 @@
 import { ReactElement } from "react";
 
-export const Center = ({
+export const ButtonCenter = ({
     child,
-    heigh
   }: {
     child: ReactElement
-    heigh: string,
   }) => {
   return (
-    <div className={`flex justify-center items-center h-[${heigh}]`}>
+    <div className={"flex justify-center items-center h-[10vh]"}>
       {child}
    </div>
   )

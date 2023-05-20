@@ -7,10 +7,9 @@ export const Button = ({
     child: ReactElement,
     onClick: React.MouseEventHandler<HTMLButtonElement>
   }) => (
-  <div className="bg-[#D9D9D9] w-[144px] h-[72px] shadow-lg rounded-3xl flex text-xl antialiased tracking-widest text-center align-middle justify-center hover:shadow-xl">
-    <button className="self-center h-full w-full" onClick={onClick}>
+  <div className="bg-secondary-color min-w-[120px] w-[14vw] min-h-[65px] h-[8vh] shadow-lg rounded-3xl flex text-xl antialiased tracking-widest text-center align-middle justify-center hover:shadow-xl">
+    <button className="self-center h-full w-full text-primary-font-color" onClick={onClick}>
       {child}
     </button>
   </div>
 )
-

@@ -1,27 +1,17 @@
 import { ReactNode } from "react";
 
 type HeaderStyles = {
-  bgColor?: string,
-  width?: string,
   height?: string,
-  shadow?: string,
 }
 
 export const Header = ({
     child,
-    styles,
   }: {
     child?: ReactNode
-    styles?: HeaderStyles,
   }) => {
-  const Background = "bg-[" + (styles?.bgColor || "#FFF") + "]";
-  const Width = styles?.width || "w-screen";
-  const Height = styles?.height || "h-auto";
-  const Shadow = styles?.shadow;
-  const Child = child || <></>
-  const Styles = [Background, Width, Height, Shadow, "flex"].join(" ");
+  const Child = child
   return (
-  <header className={Styles}>
+  <header className="bg-secondary-color w-screen h-[7vh] flex shadow-xl">
     {Child}
   </header>)
 }

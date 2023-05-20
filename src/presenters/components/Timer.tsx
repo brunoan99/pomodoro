@@ -1,15 +1,14 @@
-export const Timer = ({ time, msg, breaks }: { time: string, msg: string, breaks: number}) => (
-  <div className="bg-[#D9D9D9] h-80 w-80 rounded-full shadow-xl">
-    <div className="h-full w-full flex flex-col text-center align-middle justify-center">
-      <p className="pb-[10px] antialiased tracking-widest text-2xl">
-        {time}
-      </p>
-      <p className="pb-[10px] pt-[10px] antialiased text-xl">
-        {msg}
-      </p>
-      <p className="pt-[10px] antialiased text-xl">
-        Streak: {breaks}
-      </p>
+export const Timer = ({ time, msg }: { time: string, msg: string }) => (
+  <div className="flex justify-center items-center h-[63vh]">
+    <div className="bg-secondary-color min-w-[250px] w-[25vw] min-h-[250px] h-[25vw] rounded-full shadow-xl">
+      <div className="mt-[1vh] h-full w-full flex flex-col justify-center text-center align-middle">
+        <p className="antialiased select-none tracking-[4px] text-3xl text-center text-primary-font-color">
+          {time.split('').join(' ')}
+        </p>
+        <p className="pt-[1vh] antialiased select-none tracking-[4px] text-lg text-center text-primary-font-color">
+          {msg}
+        </p>
+      </div>
     </div>
   </div>
 )
