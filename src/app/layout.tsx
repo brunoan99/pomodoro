@@ -1,3 +1,4 @@
+import { TimerProvider } from '@/context/timer.provider';
 import './globals.css'
 import type { Metadata } from "next";
 
@@ -15,8 +16,10 @@ export default function RootLayout({
     <html lang="en">
       <link rel="shortcut icon" type="image/svg" href="/assets/images/clock.svg" />
       <body>
-        {children}
+        <TimerProvider>
+          {children}
+        </TimerProvider>
       </body>
     </html>
-  )
+  );
 }

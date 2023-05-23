@@ -1,104 +1,56 @@
 'use client';
 
-import { HomePage } from '@/presenters/pages/HomePage'
-import { useState, useRef } from 'react';
+import { Button, ButtonCenter, Column, Header, Row, Screen, Watch, Title } from '@/components'
+import { TimerContext } from "@/context/timer.provider";
+import { useContext } from 'react';
 
-const useTimer = () => {
-  type stateType = "Focus" | "Short" | "Long";
-  const stateInfo = {
-    "Focus": { "time": "25:00", "message": "Focus Time!" },
-    "Short": { "time": "05:00", "message": "Short Break!" },
-    "Long":  { "time": "15:00", "message": "Long Break!" },
-  };
+export default function HomePage() {
+  const timerContext = useContext(TimerContext);
+  const timer = timerContext.timer;
+  const ticking = timer.ticking;
+  const message = timer.message;
+  const time = timerContext.getDisplayTime().split('').join(' ');
+  const playButtonOnClick = () => timerContext.setTicking(!ticking);
+  const nextButtonOnClick = () => timerContext.setNextState();
 
-  const [state, setState] = useState<stateType>("Focus");
-  const [time, setTime] = useState(stateInfo[state]["time"]);
-  const [message, setMessage] = useState(stateInfo[state]["message"]);
-  const [ticking, setTicking] = useState(false);
-  const [breakCount, setBreakCount] = useState(0);
-  const audio = typeof Audio !== "undefined" && new Audio("/assets/audios/alarm-clock.mp3");
-  if (audio) audio.loop = false;
+  const titleLabel = "My Pomodoro"
+  const playButtonLabel = ticking ? "Pause" : "Resume";
+  const nextButtonLabel = "Next"
 
-  const passASecond = () => {
-    const [minute, second] = time.split(":");
-    let newTime: string;
-    if (parseInt(second) > 0) {
-      const newSecond = parseInt(second) - 1;
-      const secondString = newSecond < 10
-            ? "0" + newSecond.toString()
-            : newSecond;
-      newTime = minute + ":" + secondString;
-    } else {
-      const newMinute = parseInt(minute) - 1;
-      const minuteString = newMinute < 10
-            ? "0" + newMinute.toString()
-            : newMinute;
-      const secondString = "59";
-      newTime = minuteString + ":" + secondString;
-    }
-    newTime == "00:00"
-      ? setNextState()
-      : setTimeAndTitle(newTime)
-  }
 
-  const setTimeAndTitle = (newTime: string) => {
-    setTime(newTime);
-    setTitle(state + " - " + newTime);
-  }
-
-  const getNextState = (state: stateType, breakCount: number): stateType => {
-    if (state === "Focus" && ((breakCount % 4) < 3)) return "Short"
-    else if (state === "Focus") return "Long"
-    return "Focus"
-  }
-
-  const setTitle = (title: string) => document.title = title;
-
-  const setNextState = (playAudio = true) => {
-    const nextState = getNextState(state, breakCount);
-    const nextBreakCount = breakCount + (nextState != "Focus" ? 1 : 0)
-
-    setState(nextState)
-    setTitle(stateInfo[nextState]["message"]);
-    setMessage(stateInfo[nextState]["message"]);
-    setTime(stateInfo[nextState]["time"]);
-    setBreakCount(nextBreakCount);
-    setTicking(false);
-    if (playAudio && audio) audio.play();
-  }
-
-  return {
-    state,
-    time,
-    message,
-    ticking,
-    setTicking,
-    passASecond,
-    setNextState
-  };
-}
-
-export default function Home() {
-  const {
-    time,
-    ticking,
-    message,
-    passASecond,
-    setTicking,
-    setNextState,
-  } = useTimer()
-
-  const playButtonOnClick = () => setTicking(!ticking);
-  const nextButtonOnClick = () => setNextState(false);
-
-  return (
-    <HomePage
-      time={time}
-      ticking={ticking}
-      message={message}
-      passASecond={passASecond}
-      playButtonOnClick={playButtonOnClick}
-      nextButtonOnClick={nextButtonOnClick}
+  return <>
+    <Screen
+      child={<Column
+        childrens={[
+          <Header
+            key={"header"}
+            child={
+              <Title
+                child={titleLabel}
+            />}
+          />,
+          <Watch
+            key={"watch"}
+            time={time}
+            message={message}
+          />,
+          <ButtonCenter
+            key={"buttons"}
+            child={<Row
+              childrens={[
+                <Button
+                  key={"play-button"}
+                  child={<p>{playButtonLabel}</p>}
+                  onClick={playButtonOnClick}/>,
+                <Button
+                  key={"next-button"}
+                  child={<p>{nextButtonLabel}</p>}
+                  onClick={nextButtonOnClick}/>
+              ]}
+            />}
+          />
+        ]}
+      />}
     />
-  )
+  </>;
 }
