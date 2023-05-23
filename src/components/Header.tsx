@@ -1,17 +1,22 @@
-import { ReactNode } from "react";
+import { ReactElement } from "react";
 
 type HeaderStyles = {
   height?: string,
 }
 
 export const Header = ({
-    child,
+    title,
+    action,
   }: {
-    child?: ReactNode
+    title: ReactElement
+    action: ReactElement
   }) => {
-  const Child = child
   return (
   <header className="bg-secondary-color w-screen h-[7vh] flex shadow-xl">
-    {Child}
+    <div className="flex flex-row w-full justify-between pl-[40px] pr-[40px]">
+      {title}
+      {action}
+    </div>
+
   </header>)
 }

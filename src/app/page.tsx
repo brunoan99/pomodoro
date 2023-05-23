@@ -1,6 +1,7 @@
 'use client';
 
-import { Button, ButtonCenter, Column, Header, Row, Screen, Watch, Title } from '@/components'
+import { Button, ButtonCenter, Column, Header, Row, Screen, Watch, Title, SwitchThemeButton } from '@/components'
+import { ThemeContext } from '@/context/theme.provider';
 import { TimerContext } from "@/context/timer.provider";
 import { useContext } from 'react';
 
@@ -17,6 +18,8 @@ export default function HomePage() {
   const playButtonLabel = ticking ? "Pause" : "Resume";
   const nextButtonLabel = "Next"
 
+  const themeContext = useContext(ThemeContext);
+  const switchTheme = themeContext.switchTheme;
 
   return <>
     <Screen
@@ -24,10 +27,16 @@ export default function HomePage() {
         childrens={[
           <Header
             key={"header"}
-            child={
+            title={
               <Title
+                key={"header-title"}
                 child={titleLabel}
             />}
+            action={
+              <SwitchThemeButton
+                onClick={switchTheme}
+              />
+            }
           />,
           <Watch
             key={"watch"}

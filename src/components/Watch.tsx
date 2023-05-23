@@ -1,6 +1,3 @@
-import { TimerContext } from "@/context/timer.provider";
-import { useContext } from "react";
-
 export const Watch = ({ time, message }: { time: string, message: string }) => {
   return (
     <div className="flex justify-center items-center h-[63vh]">
