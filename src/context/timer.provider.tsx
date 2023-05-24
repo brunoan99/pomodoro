@@ -66,7 +66,7 @@ const TimerProvider = ({ children }: PropsWithChildren) => {
   useEffect(() => {
     const timeout = setTimeout(() => {
       if (timer.ticking) passASecond();
-    }, 1)
+    }, 1e3)
     return () => clearTimeout(timeout)
   }, [timer, passASecond]);
 
