@@ -2,6 +2,7 @@ import { Timer } from "@/@core/domain/entities/Timer";
 
 class SetNextStateUseCase {
   execute(timer: Timer): Timer {
+    console.log("teste 2")
     const state = Timer.getNextState(timer.state, timer.breakCount);
     const time = Timer.stateInfo[state].time;
     const message = Timer.stateInfo[state].message;

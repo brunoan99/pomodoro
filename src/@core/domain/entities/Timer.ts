@@ -27,7 +27,7 @@ class Timer {
 
   constructor({ state, time, message, breakCount, ticking }: TimerProps) {
     this.actualState = state || "Focus";
-    this.timeInSeconds = time || Timer.stateInfo[this.state].time;
+    this.timeInSeconds = time === undefined ? Timer.stateInfo[this.state].time : time;
     this.message = message || Timer.stateInfo[this.state].message;
     this.breakCount = breakCount || 0;
     this.ticking = ticking || false;

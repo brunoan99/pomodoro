@@ -27,7 +27,7 @@ container
 
 container
   .bind(Registry.PassASecondUseCase)
-  .toConstantValue(new PassASecondUseCase(container.get<SetNextStateUseCase>(Registry.SetNextStateUseCase)));
+  .toConstantValue(new PassASecondUseCase());
 
 export {
   Registry,

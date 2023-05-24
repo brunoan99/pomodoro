@@ -6,7 +6,7 @@ type theme = "light" | "dark";
 
 type ThemeContextType = {
   theme: theme
-  switchTheme: () => void,
+  switchTheme: () => void
 }
 
 const defaultContext: ThemeContextType = {

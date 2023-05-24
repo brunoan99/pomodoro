@@ -8,6 +8,7 @@ import {
   createContext,
   useCallback,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 
@@ -34,6 +35,8 @@ const passASecondUseCase = container.get<PassASecondUseCase>(Registry.PassASecon
 
 const TimerProvider = ({ children }: PropsWithChildren) => {
   const [timer, setTimer] = useState<Timer>(defaultContext.timer);
+  const audio =  useMemo(() => { return new Audio("/assets/audios/alarm-clock.mp3") }, []);
+  audio.loop = false;
 
   const getDisplayTime = useCallback(() => {
     return getDisplayTimeUseCase.execute(timer);
@@ -51,13 +54,17 @@ const TimerProvider = ({ children }: PropsWithChildren) => {
 
   const passASecond = useCallback(() => {
     const newTimer = passASecondUseCase.execute(timer);
-    setTimer(newTimer);
-  }, [timer]);
+    if (newTimer.time === 0) {
+      audio.play();
+      setTimer(setNextStateUseCase.execute(newTimer));
+    }
+    else setTimer(newTimer);
+  }, [timer, audio]);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
       if (timer.ticking) passASecond();
-    }, 1e3)
+    }, 1)
     return () => clearTimeout(timeout)
   }, [timer, passASecond]);
 
