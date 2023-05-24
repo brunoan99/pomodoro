@@ -35,8 +35,10 @@ const passASecondUseCase = container.get<PassASecondUseCase>(Registry.PassASecon
 
 const TimerProvider = ({ children }: PropsWithChildren) => {
   const [timer, setTimer] = useState<Timer>(defaultContext.timer);
-  const audio =  useMemo(() => { return new Audio("/assets/audios/alarm-clock.mp3") }, []);
-  audio.loop = false;
+  const audio =  useMemo(() => {
+    if (typeof window !== 'undefined') return new Audio("/assets/audios/alarm-clock.mp3")
+  }, []);
+  if (audio) audio.loop = false;
 
   const getDisplayTime = useCallback(() => {
     return getDisplayTimeUseCase.execute(timer);
@@ -55,7 +57,7 @@ const TimerProvider = ({ children }: PropsWithChildren) => {
   const passASecond = useCallback(() => {
     const newTimer = passASecondUseCase.execute(timer);
     if (newTimer.time === 0) {
-      audio.play();
+      if (audio) audio.play();
       setTimer(setNextStateUseCase.execute(newTimer));
     }
     else setTimer(newTimer);
