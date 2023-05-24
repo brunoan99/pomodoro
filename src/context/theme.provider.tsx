@@ -1,6 +1,8 @@
 "use client";
 
-import { PropsWithChildren, createContext, useCallback, useState } from "react";
+import { GetLocalThemeUseCase, SetLocalThemeUseCase } from "@/@core/application/theme";
+import { Registry, container } from "@/@core/infra/container-registry";
+import { PropsWithChildren, createContext, useCallback, useEffect, useState } from "react";
 
 type theme = "light" | "dark";
 
@@ -16,14 +18,22 @@ const defaultContext: ThemeContextType = {
 
 const ThemeContext = createContext<ThemeContextType>(defaultContext);
 
+const getLocalThemeUseCase = container.get<GetLocalThemeUseCase>(Registry.GetLocalThemeUseCase)
+const setLocalThemeUseCase = container.get<SetLocalThemeUseCase>(Registry.SetLocalThemeUseCase)
+
 const ThemeProvider = ({ children }: PropsWithChildren) => {
-  const [theme, setTheme] = useState<theme>("light");
+  const [theme, setTheme] = useState<theme>(getLocalThemeUseCase.execute() || "light");
 
   const switchTheme = useCallback(() => {
     const nextTheme = theme == "light" ? "dark" : "light";
     document.documentElement.setAttribute("data-theme", nextTheme);
+    setLocalThemeUseCase.execute(nextTheme);
     setTheme(nextTheme);
   }, [theme]);
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+  });
 
   return (
     <ThemeContext.Provider
@@ -37,5 +47,5 @@ const ThemeProvider = ({ children }: PropsWithChildren) => {
   )
 }
 
-export type { ThemeContextType }
+export type { theme, ThemeContextType }
 export { ThemeContext, ThemeProvider }
