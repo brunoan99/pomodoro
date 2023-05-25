@@ -2,8 +2,7 @@
 module.exports = {
   mode: 'jit',
   content: [
-    './src/presenters/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
     extend: {

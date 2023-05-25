@@ -1,5 +1,6 @@
 import './globals.css'
 import type { Metadata } from "next";
+import { Providers } from './providers';
 
 export const metadata: Metadata = {
   title: 'My Pomodoro',
@@ -12,11 +13,13 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <link rel="shortcut icon" type="image/svg" href="/assets/images/clock.svg" />
-      <body>
-        {children}
-      </body>
-    </html>
-  )
+      <html lang="en">
+        <link rel="shortcut icon" type="image/svg" href="/assets/images/clock.svg" />
+        <body>
+          <Providers>
+            {children}
+          </Providers>
+        </body>
+      </html>
+  );
 }
