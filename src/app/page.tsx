@@ -1,12 +1,6 @@
 import Home from "@/pages/home";
-import { TimerProvider, ThemeProvider } from '@/context';
+import { NextPage } from "next";
 
-const HomePage = () => (
-  <ThemeProvider>
-    <TimerProvider>
-      <Home/>
-    </TimerProvider>
-  </ThemeProvider>
-)
+const HomePage: NextPage = () => <Home/>
 
 export default HomePage;

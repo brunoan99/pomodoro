@@ -8,13 +8,15 @@ type theme = "light" | "dark";
 
 type ThemeContextType = {
   theme: theme
-  switchTheme: () => void
+  switchTheme: (nextTheme?: theme) => void
 }
 
 const defaultContext: ThemeContextType = {
   theme: "light",
-  switchTheme: () => {},
+  switchTheme: (nextTheme?: theme) => {},
 };
+
+const getNextTheme = (theme: theme) => theme === "dark" ? "light" : "dark"
 
 const ThemeContext = createContext<ThemeContextType>(defaultContext);
 
@@ -22,18 +24,23 @@ const getLocalThemeUseCase = container.get<GetLocalThemeUseCase>(Registry.GetLoc
 const setLocalThemeUseCase = container.get<SetLocalThemeUseCase>(Registry.SetLocalThemeUseCase)
 
 const ThemeProvider = ({ children }: PropsWithChildren) => {
-  const [theme, setTheme] = useState<theme>(getLocalThemeUseCase.execute() || "light");
+  const [theme, setTheme] = useState<theme>("light");
 
-  const switchTheme = useCallback(() => {
-    const nextTheme = theme == "light" ? "dark" : "light";
-    document.documentElement.setAttribute("data-theme", nextTheme);
-    setLocalThemeUseCase.execute(nextTheme);
-    setTheme(nextTheme);
+  const switchTheme = useCallback((nextTheme?: theme) => {
+    if (typeof document === "undefined") return
+    const newTheme = nextTheme !== undefined ? nextTheme : getNextTheme(theme);
+    document.documentElement.setAttribute("data-theme", newTheme);
+    setLocalThemeUseCase.execute(newTheme);
+    setTheme(newTheme);
   }, [theme]);
 
   useEffect(() => {
-    document.documentElement.setAttribute("data-theme", theme);
-  });
+    if (typeof document !== "undefined") {
+      const nextTheme = getLocalThemeUseCase.execute() || "light"
+      document.documentElement.setAttribute("data-theme", nextTheme);
+      setTheme(nextTheme);
+    }
+  }, []);
 
   return (
     <ThemeContext.Provider

@@ -6,21 +6,20 @@ import { useContext } from 'react';
 
 export default function HomePage() {
   const timerContext = useContext(TimerContext);
-  const timer = timerContext.timer;
-  const ticking = timer.ticking;
-  const message = timer.message;
-  const time = timerContext.getDisplayTime().split('').join(' ');
+  const { ticking, message } = timerContext.timer;
+  const time = timerContext.getDisplayTime();
   const playButtonOnClick = () => timerContext.setTicking(!ticking);
-  const nextButtonOnClick = () => timerContext.setNextState();
+  const nextButtonOnClick = timerContext.setNextState;
 
-  const titleLabel = "My Pomodoro"
+  const titleLabel = "My Pomodoro";
   const playButtonLabel = ticking ? "Pause" : "Resume";
-  const nextButtonLabel = "Next"
+  const nextButtonLabel = "Next";
 
-  const themeContext = useContext(ThemeContext);
-  const switchTheme = themeContext.switchTheme;
+  // const themeProvider = useContext(ThemeContext);
+  // const switchTheme = themeProvider.switchTheme;
 
-  return <>
+  return (
+  <>
     <Screen
       child={<Column
         childrens={[
@@ -33,7 +32,7 @@ export default function HomePage() {
             />}
             action={
               <SwitchThemeButton
-                onClick={switchTheme}
+                onClick={() => {}}
               />
             }
           />,
@@ -60,5 +59,5 @@ export default function HomePage() {
         ]}
       />}
     />
-  </>;
+  </>);
 }

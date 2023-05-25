@@ -6,7 +6,7 @@ class GetDisplayTimeUseCase {
     const second = Math.floor(timer.time % 60);
     const minuteString = minute.toString().padStart(2, "0");
     const secondString = second.toString().padStart(2, "0");
-    return `${minuteString}:${secondString}`
+    return `${minuteString}:${secondString}`.split('').join(" ")
   }
 }
 
