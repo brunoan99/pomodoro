@@ -32,7 +32,6 @@ export default function HomePage() {
             />}
             action={
               <SwitchThemeButton
-                onClick={() => {}}
               />
             }
           />,
