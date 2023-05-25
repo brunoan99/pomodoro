@@ -1,12 +1,7 @@
 import { Container } from "inversify";
 import { GetDisplayTimeUseCase, PassASecondUseCase, SetNextStateUseCase, SetTickingUseCase } from "../application/timer";
-import { GetLocalThemeUseCase, SetLocalThemeUseCase } from "../application/theme";
 
 const Registry = {
-  // Theme
-  GetLocalThemeUseCase: Symbol.for("GetLocalThemeUseCase"),
-  SetLocalThemeUseCase: Symbol.for("SetLocalThemeUseCase"),
-
   // Timer
   GetDisplayTimeUseCase: Symbol.for("GetDisplayTimeUseCase"),
   SetNextStateUseCase: Symbol.for("SetNextStateUseCase"),
@@ -15,15 +10,6 @@ const Registry = {
 }
 
 const container = new Container();
-
-// Theme
-container
-  .bind(Registry.GetLocalThemeUseCase)
-  .toConstantValue(new GetLocalThemeUseCase());
-
-container
-  .bind(Registry.SetLocalThemeUseCase)
-  .toConstantValue(new SetLocalThemeUseCase());
 
 // Timer
 container

@@ -1,7 +1,7 @@
 "use client";
 
 import { Button, ButtonCenter, Column, Header, Row, Screen, Watch, Title, SwitchThemeButton } from '@/components'
-import { ThemeContext, TimerContext } from '@/context';
+import { TimerContext } from '@/context';
 import { useContext } from 'react';
 
 export default function HomePage() {
@@ -15,9 +15,6 @@ export default function HomePage() {
   const playButtonLabel = ticking ? "Pause" : "Resume";
   const nextButtonLabel = "Next";
 
-  // const themeProvider = useContext(ThemeContext);
-  // const switchTheme = themeProvider.switchTheme;
-
   return (
   <>
     <Screen
@@ -27,7 +24,6 @@ export default function HomePage() {
             key={"header"}
             title={
               <Title
-                key={"header-title"}
                 child={titleLabel}
             />}
             action={
