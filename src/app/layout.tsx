@@ -1,6 +1,7 @@
 import './globals.css'
 import type { Metadata } from "next";
 import { Providers } from './providers';
+import { Analytics } from '@vercel/analytics/react';
 
 export const metadata: Metadata = {
   title: 'My Pomodoro',
@@ -19,6 +20,7 @@ export default function RootLayout({
           <Providers>
             {children}
           </Providers>
+	  <Analytics />
         </body>
       </html>
   );
