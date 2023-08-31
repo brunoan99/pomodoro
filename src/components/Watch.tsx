@@ -1,4 +1,4 @@
-export const Watch = ({ time, message }: { time: string, message: string }) => {
+const Watch = ({ time, message }: { time: string; message: string }) => {
   return (
     <div className="flex justify-center items-center h-[63vh]">
       <div className="bg-secondary-color min-w-[250px] w-[25vw] max-w-[400px] min-h-[250px] h-[25vw] max-h-[400px] rounded-full shadow-xl">
@@ -13,4 +13,6 @@ export const Watch = ({ time, message }: { time: string, message: string }) => {
       </div>
     </div>
   );
-}
+};
+
+export { Watch };

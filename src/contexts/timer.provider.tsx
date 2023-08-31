@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  GetDisplayTimeUseCase,
-  PassASecondUseCase,
-  SetNextStateUseCase,
-  SetTickingUseCase,
-} from "@core/data/timer";
-import { Timer } from "@/@core/domain/entities/Timer";
-import { Registry, container } from "@/@core/infra/container-registry";
+import { Timer } from "@domain";
 import {
   PropsWithChildren,
   createContext,
@@ -18,66 +11,67 @@ import {
 } from "react";
 
 type TimerContextType = {
-  timer: Timer;
-  getDisplayTime: () => string;
-  setNextState: () => void;
+  displayTime: string;
+  displayMessage: string;
+  ticking: boolean;
   setTicking: (ticking: boolean) => void;
+  setNextState: () => void;
 };
 
 const defaultContext: TimerContextType = {
-  timer: new Timer({}),
-  getDisplayTime: () => "",
+  displayTime: "",
+  displayMessage: "",
+  ticking: false,
   setNextState: (): void => {},
   setTicking: (ticking: boolean): void => {},
 };
 
 const TimerContext = createContext<TimerContextType>(defaultContext);
 
-const getDisplayTimeUseCase = container.get<GetDisplayTimeUseCase>(
-  Registry.GetDisplayTimeUseCase
-);
-const setNextStateUseCase = container.get<SetNextStateUseCase>(
-  Registry.SetNextStateUseCase
-);
-const setTickingUseCase = container.get<SetTickingUseCase>(
-  Registry.SetTickingUseCase
-);
-const passASecondUseCase = container.get<PassASecondUseCase>(
-  Registry.PassASecondUseCase
-);
-
 const TimerProvider = ({ children }: PropsWithChildren) => {
-  const [timer, setTimer] = useState<Timer>(defaultContext.timer);
+  const [timer, setTimer] = useState<Timer>(new Timer({}));
   const audio = useMemo(() => {
     if (typeof window !== "undefined")
       return new Audio("/assets/audios/alarm-clock.mp3");
   }, []);
   if (audio) audio.loop = false;
 
-  const getDisplayTime = useCallback(() => {
-    return getDisplayTimeUseCase.execute(timer);
-  }, [timer]);
-
   const setNextState = useCallback(() => {
-    const newTimer = setNextStateUseCase.execute(timer);
+    const state = timer.nextState;
+    const breakCount =
+      timer.state === "Focus" ? timer.breakCount + 1 : timer.breakCount;
+    const newTimer = new Timer({ state, breakCount });
     setTimer(newTimer);
   }, [timer]);
 
   const setTicking = useCallback(
     (ticking: boolean) => {
-      const newTimer = setTickingUseCase.execute(timer, ticking);
+      const newTimer = new Timer({
+        time: timer.time,
+        state: timer.state,
+        message: timer.message,
+        breakCount: timer.breakCount,
+        ticking: ticking,
+      });
       setTimer(newTimer);
     },
     [timer]
   );
 
   const passASecond = useCallback(() => {
-    const newTimer = passASecondUseCase.execute(timer);
+    const newTime = timer.time - 1;
+    const newTimer = new Timer({
+      time: newTime,
+      state: timer.state,
+      message: timer.message,
+      breakCount: timer.breakCount,
+      ticking: timer.ticking,
+    });
     if (newTimer.time === 0) {
-      if (audio) audio.play();
-      setTimer(setNextStateUseCase.execute(newTimer));
+      audio?.play();
+      setNextState();
     } else setTimer(newTimer);
-  }, [timer, audio]);
+  }, [timer, audio, setNextState]);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -89,8 +83,9 @@ const TimerProvider = ({ children }: PropsWithChildren) => {
   return (
     <TimerContext.Provider
       value={{
-        timer,
-        getDisplayTime,
+        displayTime: timer.displayTime,
+        displayMessage: timer.message,
+        ticking: timer.ticking,
         setNextState,
         setTicking,
       }}

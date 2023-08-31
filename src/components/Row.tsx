@@ -1,7 +1,5 @@
-import { ReactElement } from "react"
+const Row = ({ childrens }: { childrens: React.ReactElement[] }) => (
+  <div className="flex flex-row justify-start gap-x-[50px]">{childrens}</div>
+);
 
-export const Row = ({ childrens }: { childrens: ReactElement[] }) => (
-  <div className="flex flex-row justify-start gap-x-[50px]">
-    {childrens}
-  </div>
-)
+export { Row };
