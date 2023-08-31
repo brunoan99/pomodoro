@@ -1,6 +1,5 @@
-import Home from "@/pages/home";
-import { NextPage } from "next";
+import { HomePage } from "@pages";
 
-const HomePage: NextPage = () => <Home/>
-
-export default HomePage;
+export default function Page() {
+  return <HomePage />;
+}

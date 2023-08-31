@@ -1,4 +1,4 @@
-import { Timer } from "@/@core/domain/entities/Timer";
+import { Timer } from "@domain";
 
 class PassASecondUseCase {
   execute(timer: Timer): Timer {
@@ -9,7 +9,7 @@ class PassASecondUseCase {
       message: timer.message,
       breakCount: timer.breakCount,
       ticking: timer.ticking,
-      });
+    });
   }
 }
 

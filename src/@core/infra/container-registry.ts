@@ -1,5 +1,10 @@
 import { Container } from "inversify";
-import { GetDisplayTimeUseCase, PassASecondUseCase, SetNextStateUseCase, SetTickingUseCase } from "../application/timer";
+import {
+  GetDisplayTimeUseCase,
+  PassASecondUseCase,
+  SetNextStateUseCase,
+  SetTickingUseCase,
+} from "@data";
 
 const Registry = {
   // Timer
@@ -7,7 +12,7 @@ const Registry = {
   SetNextStateUseCase: Symbol.for("SetNextStateUseCase"),
   SetTickingUseCase: Symbol.for("SetTickingUseCase"),
   PassASecondUseCase: Symbol.for("PassASecondUseCase"),
-}
+};
 
 const container = new Container();
 
@@ -28,7 +33,4 @@ container
   .bind(Registry.PassASecondUseCase)
   .toConstantValue(new PassASecondUseCase());
 
-export {
-  Registry,
-  container
-}
+export { Registry, container };

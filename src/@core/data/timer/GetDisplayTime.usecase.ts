@@ -1,4 +1,4 @@
-import { Timer } from "@/@core/domain/entities/Timer";
+import { Timer } from "@domain";
 
 class GetDisplayTimeUseCase {
   execute(timer: Timer): string {
@@ -6,7 +6,7 @@ class GetDisplayTimeUseCase {
     const second = Math.floor(timer.time % 60);
     const minuteString = minute.toString().padStart(2, "0");
     const secondString = second.toString().padStart(2, "0");
-    return `${minuteString}:${secondString}`.split('').join(" ")
+    return `${minuteString}:${secondString}`.split("").join(" ");
   }
 }
 
