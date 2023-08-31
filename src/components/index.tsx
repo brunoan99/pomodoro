@@ -1,9 +1,7 @@
-export { Button } from "./Button"
-export { ButtonCenter } from "./ButtonCenter"
-export { Column } from "./Column"
-export { Header } from "./Header"
-export { Row } from "./Row"
-export { Screen } from "./Screen"
-export { Title } from "./Title"
-export { Watch } from "./Watch"
-export { SwitchThemeButton } from "./SwitchThemeButton"
+export { Button } from "./Button";
+export { ButtonRow } from "./ButtonRow";
+export { Header } from "./Header";
+export { Screen } from "./Screen";
+export { Title } from "./Title";
+export { Watch } from "./Watch";
+export { SwitchThemeButton } from "./SwitchThemeButton";

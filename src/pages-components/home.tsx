@@ -2,13 +2,11 @@
 
 import {
   Button,
-  ButtonCenter,
-  Column,
+  ButtonRow,
   Header,
-  Row,
   Screen,
-  Watch,
   Title,
+  Watch,
   SwitchThemeButton,
 } from "@/components";
 import { TimerContext } from "@contexts";
@@ -29,39 +27,20 @@ const HomePage = () => {
   const nextButtonLabel = "Next";
 
   return (
-    <Screen
-      child={
-        <Column
-          childrens={[
-            <Header
-              key={"header"}
-              title={<Title child={titleLabel} />}
-              action={<SwitchThemeButton />}
-            />,
-            <Watch key={"watch"} time={displayTime} message={displayMessage} />,
-            <ButtonCenter
-              key={"buttons"}
-              child={
-                <Row
-                  childrens={[
-                    <Button
-                      key={"play-button"}
-                      child={<p>{playButtonLabel}</p>}
-                      onClick={playButtonOnClick}
-                    />,
-                    <Button
-                      key={"next-button"}
-                      child={<p>{nextButtonLabel}</p>}
-                      onClick={nextButtonOnClick}
-                    />,
-                  ]}
-                />
-              }
-            />,
-          ]}
-        />
-      }
-    />
+    <Screen>
+      <Header key={"header"} action={<SwitchThemeButton />}>
+        <Title child={titleLabel} />
+      </Header>
+      <Watch key={"watch"} time={displayTime} message={displayMessage} />
+      <ButtonRow>
+        <Button key={"play-button"} onClick={playButtonOnClick}>
+          <span>{playButtonLabel}</span>
+        </Button>
+        <Button key={"next-button"} onClick={nextButtonOnClick}>
+          <span>{nextButtonLabel}</span>
+        </Button>
+      </ButtonRow>
+    </Screen>
   );
 };
 
