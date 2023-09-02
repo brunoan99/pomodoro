@@ -16,6 +16,13 @@ type TimerContextType = {
   ticking: boolean;
   setTicking: (ticking: boolean) => void;
   setNextState: () => void;
+
+  pomodoroTime: number;
+  setPomodoroTime: (time: number) => void;
+  shortBreakTime: number;
+  setShortBreakTime: (time: number) => void;
+  longBreakTime: number;
+  setLongBreakTime: (time: number) => void;
 };
 
 const defaultContext: TimerContextType = {
@@ -24,12 +31,22 @@ const defaultContext: TimerContextType = {
   ticking: false,
   setNextState: (): void => {},
   setTicking: (ticking: boolean): void => {},
+
+  pomodoroTime: 0,
+  setPomodoroTime: (time: number) => {},
+  shortBreakTime: 0,
+  setShortBreakTime: (time: number) => {},
+  longBreakTime: 0,
+  setLongBreakTime: (time: number) => {},
 };
 
 const TimerContext = createContext<TimerContextType>(defaultContext);
 
 const TimerProvider = ({ children }: PropsWithChildren) => {
   const [timer, setTimer] = useState<Timer>(new Timer({}));
+  const [pomodoroTime, setPomodoroTime] = useState<number>(1500);
+  const [shortBreakTime, setShortBreakTime] = useState<number>(300);
+  const [longBreakTime, setLongBreakTime] = useState<number>(900);
   const audio = useMemo(() => {
     if (typeof window !== "undefined")
       return new Audio("/assets/audios/alarm-clock.mp3");
@@ -88,6 +105,29 @@ const TimerProvider = ({ children }: PropsWithChildren) => {
         ticking: timer.ticking,
         setNextState,
         setTicking,
+
+        pomodoroTime: Math.floor(timer.stateInfo["Focus"].time / 60),
+        setPomodoroTime: (time: number) => {
+          const stateInfo = timer.stateInfo;
+          stateInfo.Focus.time = time * 60;
+          const newTimer = new Timer({
+            state: timer.state,
+            time: timer.time,
+            message: timer.message,
+            ticking: timer.ticking,
+            breakCount: timer.breakCount,
+            stateInfo: stateInfo,
+          });
+          setTimer(newTimer);
+        },
+        shortBreakTime: Math.floor(shortBreakTime / 60),
+        setShortBreakTime: (time: number) => {
+          setShortBreakTime(time * 60);
+        },
+        longBreakTime: Math.floor(longBreakTime / 60),
+        setLongBreakTime: (time: number) => {
+          setLongBreakTime(time * 60);
+        },
       }}
     >
       {children}

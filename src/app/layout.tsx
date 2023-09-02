@@ -2,6 +2,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Providers } from "./providers";
 import { Analytics } from "@vercel/analytics/react";
+import Script from "next/script";
 
 export const metadata: Metadata = {
   title: "My Pomodoro",
@@ -24,6 +25,7 @@ export default function RootLayout({
         <Providers>{children}</Providers>
         <Analytics />
       </body>
+      <Script src="assets/scripts/open-close-modal.js" />
     </html>
   );
 }

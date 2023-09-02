@@ -6,27 +6,43 @@ type TimerProps = {
   message?: string;
   breakCount?: number;
   ticking?: boolean;
+  stateInfo?: StateInfo;
+};
+
+type StateInfo = {
+  Focus: { time: number; message: string };
+  Short: { time: number; message: string };
+  Long: { time: number; message: string };
 };
 
 class Timer {
-  static stateInfo = {
+  public stateInfo: StateInfo = {
     Focus: { time: 1500, message: "Focus Time!" },
     Short: { time: 300, message: "Short Break!" },
     Long: { time: 900, message: "Long Break!" },
   };
-  public actualState: state;
+  public actualState: state = "Focus";
   public timeInSeconds: number;
   public message: string;
-  public breakCount: number;
-  public ticking: boolean;
+  public breakCount: number = 0;
+  public ticking: boolean = false;
 
-  constructor({ state, time, message, breakCount, ticking }: TimerProps) {
-    this.actualState = state || "Focus";
-    this.timeInSeconds =
-      time === undefined ? Timer.stateInfo[this.actualState].time : time;
-    this.message = message || Timer.stateInfo[this.actualState].message;
-    this.breakCount = breakCount || 0;
-    this.ticking = ticking || false;
+  constructor({
+    state,
+    time,
+    message,
+    breakCount,
+    ticking,
+    stateInfo,
+  }: TimerProps) {
+    if (stateInfo) this.stateInfo = stateInfo;
+    if (state) this.actualState = state;
+    if (time) this.timeInSeconds = time;
+    else this.timeInSeconds = this.stateInfo[this.actualState].time;
+    if (message) this.message = message;
+    else this.message = this.stateInfo[this.actualState].message;
+    if (breakCount) breakCount = breakCount;
+    if (ticking) this.ticking = ticking;
   }
 
   get state(): state {
