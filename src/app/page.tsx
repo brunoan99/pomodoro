@@ -1,3 +1,5 @@
+"use client";
+
 import { HomePage } from "@pages";
 
 export default function Page() {

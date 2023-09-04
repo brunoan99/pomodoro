@@ -1,5 +1,6 @@
 "use client";
 
+import { TimerConfigs } from "@core/domain/entities/Configs";
 import { Timer } from "@domain";
 import {
   PropsWithChildren,
@@ -7,6 +8,7 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 
@@ -17,13 +19,18 @@ type TimerContextType = {
   setTicking: (ticking: boolean) => void;
   setNextState: () => void;
 
-  pomodoroTime: number;
-  setPomodoroTime: (time: number) => void;
-  shortBreakTime: number;
-  setShortBreakTime: (time: number) => void;
-  longBreakTime: number;
-  setLongBreakTime: (time: number) => void;
+  focusTimeInMinutes: number;
+  changeFocusTimeInMinutes: (time: number) => void;
+  shortBreakTimeInMinutes: number;
+  changeShortBreakTimeInMinutes: (time: number) => void;
+  longBreakTimeInMinutes: number;
+  changeLongBreakTimeInMinutes: (time: number) => void;
 };
+
+const MINUTES_IN_SECONDS = 60;
+const DEFAULT_FOCUS_IN_SECONDS = 1500;
+const DEFAULT_SHORT_IN_SECONDS = 300;
+const DEFAULT_LONG_IN_SECONDS = 900;
 
 const defaultContext: TimerContextType = {
   displayTime: "",
@@ -32,63 +39,131 @@ const defaultContext: TimerContextType = {
   setNextState: (): void => {},
   setTicking: (ticking: boolean): void => {},
 
-  pomodoroTime: 0,
-  setPomodoroTime: (time: number) => {},
-  shortBreakTime: 0,
-  setShortBreakTime: (time: number) => {},
-  longBreakTime: 0,
-  setLongBreakTime: (time: number) => {},
+  focusTimeInMinutes: 0,
+  changeFocusTimeInMinutes: (time: number) => {},
+  shortBreakTimeInMinutes: 0,
+  changeShortBreakTimeInMinutes: (time: number) => {},
+  longBreakTimeInMinutes: 0,
+  changeLongBreakTimeInMinutes: (time: number) => {},
 };
 
 const TimerContext = createContext<TimerContextType>(defaultContext);
 
 const TimerProvider = ({ children }: PropsWithChildren) => {
-  const [timer, setTimer] = useState<Timer>(new Timer({}));
-  const [pomodoroTime, setPomodoroTime] = useState<number>(1500);
-  const [shortBreakTime, setShortBreakTime] = useState<number>(300);
-  const [longBreakTime, setLongBreakTime] = useState<number>(900);
+  const [focusTime, setFocusTime] = useState<number>(
+    typeof window !== "undefined"
+      ? parseInt(localStorage.getItem("FocusTime") || "") ||
+          DEFAULT_FOCUS_IN_SECONDS
+      : DEFAULT_FOCUS_IN_SECONDS
+  );
+  const [shortTime, setShortTime] = useState<number>(
+    typeof window !== "undefined"
+      ? parseInt(localStorage.getItem("ShortBreakTime") || "") ||
+          DEFAULT_SHORT_IN_SECONDS
+      : DEFAULT_SHORT_IN_SECONDS
+  );
+  const [longTime, setLongTime] = useState<number>(
+    typeof window !== "undefined"
+      ? parseInt(localStorage.getItem("LongBreakTime") || "") ||
+          DEFAULT_LONG_IN_SECONDS
+      : DEFAULT_LONG_IN_SECONDS
+  );
+
+  const config = {
+    Focus: { time: focusTime, message: "Focus Time!" },
+    Short: { time: shortTime, message: "Short Break" },
+    Long: { time: longTime, message: "Long Break" },
+  };
+  const timerConfig = useRef<TimerConfigs>(new TimerConfigs({ config }));
+
+  const [timer, setTimer] = useState<Timer>(
+    new Timer({ time: focusTime, message: "Focus Time!" })
+  );
   const audio = useMemo(() => {
     if (typeof window !== "undefined")
       return new Audio("/assets/audios/alarm-clock.mp3");
   }, []);
   if (audio) audio.loop = false;
 
-  const setNextState = useCallback(() => {
-    const state = timer.nextState;
-    const breakCount =
-      timer.state === "Focus" ? timer.breakCount + 1 : timer.breakCount;
-    const newTimer = new Timer({ state, breakCount });
+  const setTicking = (ticking: boolean) => {
+    const newTimer = new Timer({
+      time: timer.time,
+      message: timer.message,
+      ticking: ticking,
+    });
     setTimer(newTimer);
-  }, [timer]);
+  };
 
-  const setTicking = useCallback(
-    (ticking: boolean) => {
-      const newTimer = new Timer({
-        time: timer.time,
-        state: timer.state,
-        message: timer.message,
-        breakCount: timer.breakCount,
-        ticking: ticking,
-      });
-      setTimer(newTimer);
-    },
-    [timer]
-  );
+  const setNextState = useCallback(() => {
+    setTimer(timerConfig.current.genNextTimer());
+  }, [timerConfig]);
 
   const passASecond = useCallback(() => {
-    const newTime = timer.time - 1;
     const newTimer = new Timer({
-      time: newTime,
-      state: timer.state,
+      time: timer.time - 1,
       message: timer.message,
-      breakCount: timer.breakCount,
       ticking: timer.ticking,
     });
+    setTimer(newTimer);
     if (newTimer.time === 0) {
       audio?.play();
       setNextState();
-    } else setTimer(newTimer);
+    }
   }, [timer, audio, setNextState]);
+
+  const focusTimeInMinutes = Math.floor(focusTime / MINUTES_IN_SECONDS);
+  const changeFocusTimeInMinutes = (timeInMinutes: number) => {
+    if (
+      timeInMinutes !== null &&
+      timeInMinutes !== undefined &&
+      timeInMinutes > 0
+    ) {
+      const timeInSeconds = timeInMinutes * MINUTES_IN_SECONDS;
+      timerConfig.current.config["Focus"].time = timeInSeconds;
+      setFocusTime(timeInSeconds);
+    }
+  };
+
+  const shortBreakTimeInMinutes = Math.floor(shortTime / MINUTES_IN_SECONDS);
+  const changeShortBreakTimeInMinutes = (timeInMinutes: number) => {
+    if (
+      timeInMinutes !== null &&
+      timeInMinutes !== undefined &&
+      timeInMinutes > 0
+    ) {
+      const timeInSeconds = timeInMinutes * MINUTES_IN_SECONDS;
+      timerConfig.current.config["Short"].time = timeInSeconds;
+      setShortTime(timeInSeconds);
+    }
+  };
+
+  const longBreakTimeInMinutes = Math.floor(longTime / MINUTES_IN_SECONDS);
+  const changeLongBreakTimeInMinutes = (timeInMinutes: number) => {
+    if (
+      timeInMinutes !== null &&
+      timeInMinutes !== undefined &&
+      timeInMinutes > 0
+    ) {
+      const timeInSeconds = timeInMinutes * MINUTES_IN_SECONDS;
+      timerConfig.current.config["Long"].time = timeInSeconds;
+      setLongTime(timeInSeconds);
+    }
+  };
+
+  useEffect(() => {
+    if (typeof window !== "undefined")
+      localStorage.setItem("FocusTime", focusTime.toString());
+  }, [focusTime]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined")
+      localStorage.setItem("ShortBreakTime", shortTime.toString());
+  }, [shortTime]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined")
+      localStorage.setItem("LongBreakTime", longTime.toString());
+  }, [longTime]);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -106,28 +181,12 @@ const TimerProvider = ({ children }: PropsWithChildren) => {
         setNextState,
         setTicking,
 
-        pomodoroTime: Math.floor(timer.stateInfo["Focus"].time / 60),
-        setPomodoroTime: (time: number) => {
-          const stateInfo = timer.stateInfo;
-          stateInfo.Focus.time = time * 60;
-          const newTimer = new Timer({
-            state: timer.state,
-            time: timer.time,
-            message: timer.message,
-            ticking: timer.ticking,
-            breakCount: timer.breakCount,
-            stateInfo: stateInfo,
-          });
-          setTimer(newTimer);
-        },
-        shortBreakTime: Math.floor(shortBreakTime / 60),
-        setShortBreakTime: (time: number) => {
-          setShortBreakTime(time * 60);
-        },
-        longBreakTime: Math.floor(longBreakTime / 60),
-        setLongBreakTime: (time: number) => {
-          setLongBreakTime(time * 60);
-        },
+        focusTimeInMinutes,
+        changeFocusTimeInMinutes,
+        shortBreakTimeInMinutes,
+        changeShortBreakTimeInMinutes,
+        longBreakTimeInMinutes,
+        changeLongBreakTimeInMinutes,
       }}
     >
       {children}

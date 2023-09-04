@@ -12,10 +12,10 @@ const SwitchThemeButton = () => {
   return (
     <>
       <button
-        className="h-4/6 p-2 self-center border rounded-2xl border-slate-500"
+        className="bg-[#fff] h-4/6 p-2 self-center border rounded-2xl"
         onClick={onClick}
       >
-        <p className="text-primary-font-color">Switch Theme</p>
+        <p className="text-[#000]">Switch Theme</p>
       </button>
     </>
   );

@@ -6,7 +6,3 @@ const insideModal = document.querySelector("#insideModal");
 openModalButton.addEventListener("click", () => modal.showModal());
 
 closeModalButton.addEventListener("click", () => modal.close());
-
-modal.addEventListener("click", () => modal.close());
-
-insideModal.addEventListener("click", (event) => event.stopPropagation());

@@ -8,6 +8,7 @@ import {
   Title,
   Watch,
   SwitchThemeButton,
+  ConfigModal,
 } from "@/components";
 import { TimerContext } from "@contexts";
 import { useContext } from "react";
@@ -18,17 +19,45 @@ const HomePage = () => {
     displayTime,
     displayMessage,
     ticking,
+    setTicking,
     setNextState: nextButtonOnClick,
+
+    focusTimeInMinutes,
+    changeFocusTimeInMinutes,
+    shortBreakTimeInMinutes,
+    changeShortBreakTimeInMinutes,
+    longBreakTimeInMinutes,
+    changeLongBreakTimeInMinutes,
   } = timerContext;
-  const playButtonOnClick = () => timerContext.setTicking(!ticking);
+  const playButtonOnClick = () => setTicking(!ticking);
 
   const titleLabel = "My Pomodoro";
   const playButtonLabel = ticking ? "Pause" : "Resume";
   const nextButtonLabel = "Next";
 
+  const openModalButton = <button id="open-modal-button">Settings</button>;
+
   return (
     <Screen>
-      <Header key={"header"} action={<SwitchThemeButton />}>
+      <ConfigModal
+        focusTime={focusTimeInMinutes}
+        handleFocusChange={(value: string) =>
+          changeFocusTimeInMinutes(parseInt(value) || focusTimeInMinutes)
+        }
+        shortBreakTime={shortBreakTimeInMinutes}
+        handleShortBreakChange={(value: string) =>
+          changeShortBreakTimeInMinutes(
+            parseInt(value) || shortBreakTimeInMinutes
+          )
+        }
+        longBreakTime={longBreakTimeInMinutes}
+        handleLongBreakChange={(value: string) =>
+          changeLongBreakTimeInMinutes(
+            parseInt(value) || longBreakTimeInMinutes
+          )
+        }
+      />
+      <Header key={"header"} action={openModalButton}>
         <Title child={titleLabel} />
       </Header>
       <Watch key={"watch"} time={displayTime} message={displayMessage} />
