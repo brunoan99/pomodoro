@@ -37,7 +37,7 @@ const HomePage = () => {
   const openModalButton = (
     <button
       id="open-modal-button"
-      className="border rounded-2xl border-slate-500"
+      className="h-2/3 p-2 self-center border rounded-2xl border-slate-500"
     >
       Settings
     </button>
