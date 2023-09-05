@@ -1,6 +1,8 @@
 "use client";
 
+import { useContext } from "react";
 import { SwitchThemeButton } from "./SwitchThemeButton";
+import { TimerContext } from "@contexts";
 
 const TextInputLine = ({
   label,
@@ -22,21 +24,16 @@ const TextInputLine = ({
   </div>
 );
 
-const ConfigModal = ({
-  focusTime,
-  handleFocusChange,
-  shortBreakTime,
-  handleShortBreakChange,
-  longBreakTime,
-  handleLongBreakChange,
-}: {
-  focusTime: number;
-  handleFocusChange: (value: string) => void;
-  shortBreakTime: number;
-  handleShortBreakChange: (value: string) => void;
-  longBreakTime: number;
-  handleLongBreakChange: (value: string) => void;
-}) => {
+const ConfigModal = () => {
+  const {
+    focusTimeInMinutes,
+    changeFocusTimeInMinutes,
+    shortBreakTimeInMinutes,
+    changeShortBreakTimeInMinutes,
+    longBreakTimeInMinutes,
+    changeLongBreakTimeInMinutes,
+  } = useContext(TimerContext);
+
   return (
     <dialog id="configModal" data-modal className="p-0 rounded-[40px]">
       <div id="insideModal" className="flex justify-center items-center">
@@ -44,18 +41,22 @@ const ConfigModal = ({
           <h3 className="text-[24px]">Configs</h3>
           <TextInputLine
             label="Pomodoro Time"
-            value={focusTime}
-            handleChange={(value) => handleFocusChange(value)}
+            value={focusTimeInMinutes}
+            handleChange={(value) => changeFocusTimeInMinutes(parseInt(value))}
           />
           <TextInputLine
             label="Short Break Time"
-            value={shortBreakTime}
-            handleChange={(value) => handleShortBreakChange(value)}
+            value={shortBreakTimeInMinutes}
+            handleChange={(value) =>
+              changeShortBreakTimeInMinutes(parseInt(value))
+            }
           />
           <TextInputLine
             label="Long Break Time"
-            value={longBreakTime}
-            handleChange={(value) => handleLongBreakChange(value)}
+            value={longBreakTimeInMinutes}
+            handleChange={(value) =>
+              changeLongBreakTimeInMinutes(parseInt(value))
+            }
           />
           <div className="w-[80%] flex flex-row justify-end">
             <SwitchThemeButton />

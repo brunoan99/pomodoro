@@ -9,25 +9,17 @@ import {
   Watch,
   ConfigModal,
 } from "@/components";
-import { TimerContext } from "@contexts";
+import { TimerContext, TimerProvider } from "@contexts";
 import { useContext } from "react";
 
 const HomePage = () => {
-  const timerContext = useContext(TimerContext);
   const {
     displayTime,
     displayMessage,
     ticking,
     setTicking,
     setNextState: nextButtonOnClick,
-
-    focusTimeInMinutes,
-    changeFocusTimeInMinutes,
-    shortBreakTimeInMinutes,
-    changeShortBreakTimeInMinutes,
-    longBreakTimeInMinutes,
-    changeLongBreakTimeInMinutes,
-  } = timerContext;
+  } = useContext(TimerContext);
   const playButtonOnClick = () => setTicking(!ticking);
 
   const titleLabel = "My Pomodoro";
@@ -45,24 +37,7 @@ const HomePage = () => {
 
   return (
     <Screen>
-      <ConfigModal
-        focusTime={focusTimeInMinutes}
-        handleFocusChange={(value: string) =>
-          changeFocusTimeInMinutes(parseInt(value) || focusTimeInMinutes)
-        }
-        shortBreakTime={shortBreakTimeInMinutes}
-        handleShortBreakChange={(value: string) =>
-          changeShortBreakTimeInMinutes(
-            parseInt(value) || shortBreakTimeInMinutes
-          )
-        }
-        longBreakTime={longBreakTimeInMinutes}
-        handleLongBreakChange={(value: string) =>
-          changeLongBreakTimeInMinutes(
-            parseInt(value) || longBreakTimeInMinutes
-          )
-        }
-      />
+      <ConfigModal />
       <Header key={"header"} action={openModalButton}>
         <Title child={titleLabel} />
       </Header>
