@@ -7,7 +7,6 @@ import {
   Screen,
   Title,
   Watch,
-  SwitchThemeButton,
   ConfigModal,
 } from "@/components";
 import { TimerContext } from "@contexts";
@@ -35,7 +34,14 @@ const HomePage = () => {
   const playButtonLabel = ticking ? "Pause" : "Resume";
   const nextButtonLabel = "Next";
 
-  const openModalButton = <button id="open-modal-button">Settings</button>;
+  const openModalButton = (
+    <button
+      id="open-modal-button"
+      className="border rounded-2xl border-slate-500"
+    >
+      Settings
+    </button>
+  );
 
   return (
     <Screen>
