@@ -1,2 +1,4 @@
-export type { state } from "./entities/Timer";
 export { Timer } from "./entities/Timer";
+
+export type { State } from "./entities/Configs";
+export { TimerConfigs } from "./entities/Configs";

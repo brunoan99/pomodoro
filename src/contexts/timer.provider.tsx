@@ -1,7 +1,6 @@
 "use client";
 
-import { TimerConfigs } from "@core/domain/entities/Configs";
-import { Timer } from "@domain";
+import { Timer, TimerConfigs } from "@domain";
 import {
   PropsWithChildren,
   createContext,
