@@ -2,7 +2,7 @@
 
 ## **Access it**
 
-Access the site at [My Pomodoro](https://pomodoro-brunoan99.vercel.app).
+Access the site at [My Pomodoro](https://pomodoro.brunoan.dev).
 
 <br/>
 

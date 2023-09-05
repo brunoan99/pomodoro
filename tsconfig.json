@@ -20,6 +20,14 @@
       }
     ],
     "paths": {
+      "@public/*": ["./public/*"],
+      "@core/*": ["./src/@core/*"],
+      "@domain": ["./src/@core/domain"],
+      "@data": ["./src/@core/data"],
+      "@infra": ["./src/@core/infra"],
+      "@components": ["./src/components"],
+      "@contexts": ["./src/contexts"],
+      "@pages": ["./src/pages-components"],
       "@/*": ["./src/*"]
     }
   },
