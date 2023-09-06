@@ -5,4 +5,8 @@ const insideModal = document.querySelector("#insideModal");
 
 openModalButton.addEventListener("click", () => modal.showModal());
 
+modal.addEventListener("click", (e) => {
+  if (e.target.nodeName === "DIALOG") modal.close();
+});
+
 closeModalButton.addEventListener("click", () => modal.close());
