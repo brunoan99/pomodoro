@@ -9,8 +9,9 @@ import {
   Watch,
   ConfigModal,
 } from "@/components";
-import { TimerContext, TimerProvider } from "@contexts";
-import { useContext } from "react";
+import { TimerContext } from "@contexts";
+import { useContext, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const HomePage = () => {
   const {
@@ -20,6 +21,7 @@ const HomePage = () => {
     setTicking,
     setNextState: nextButtonOnClick,
   } = useContext(TimerContext);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
   const playButtonOnClick = () => setTicking(!ticking);
 
   const titleLabel = "My Pomodoro";
@@ -30,6 +32,7 @@ const HomePage = () => {
     <button
       id="open-modal-button"
       className="h-2/3 p-2 self-center border rounded-2xl border-slate-500"
+      onClick={(e) => setModalOpen(true)}
     >
       Settings
     </button>
@@ -37,19 +40,29 @@ const HomePage = () => {
 
   return (
     <Screen>
-      <ConfigModal />
+      <ConfigModal
+        isOpen={modalOpen}
+        closeButtonPress={() => setModalOpen(false)}
+      />
       <Header key={"header"} action={openModalButton}>
         <Title child={titleLabel} />
       </Header>
-      <Watch key={"watch"} time={displayTime} message={displayMessage} />
-      <ButtonRow>
-        <Button key={"play-button"} onClick={playButtonOnClick}>
-          <span>{playButtonLabel}</span>
-        </Button>
-        <Button key={"next-button"} onClick={nextButtonOnClick}>
-          <span>{nextButtonLabel}</span>
-        </Button>
-      </ButtonRow>
+      <AnimatePresence>
+        <motion.div
+          initial={{ y: "100vh", opacity: 0 }}
+          animate={{ y: 0, opacity: 1, transition: { duration: 0.5 } }}
+        >
+          <Watch key={"watch"} time={displayTime} message={displayMessage} />
+          <ButtonRow>
+            <Button key={"play-button"} onClick={playButtonOnClick}>
+              <span>{playButtonLabel}</span>
+            </Button>
+            <Button key={"next-button"} onClick={nextButtonOnClick}>
+              <span>{nextButtonLabel}</span>
+            </Button>
+          </ButtonRow>
+        </motion.div>
+      </AnimatePresence>
     </Screen>
   );
 };
