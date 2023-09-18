@@ -38,7 +38,7 @@ const ScreenBackground = ({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1, transition: { delay: 0.1 } }}
       id="background"
-      className="flex flex-row justify-center items-center absolute w-full h-full bg-[#00000050]"
+      className="flex flex-row justify-center items-center absolute w-full h-full bg-[#00000075] z-10"
       onClick={(e) => {
         const target = e.target as HTMLElement;
         if (target.id === "background") clickOnBackground();
