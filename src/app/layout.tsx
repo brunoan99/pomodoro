@@ -23,7 +23,6 @@ export default function RootLayout({
       <body>
         <Providers>{children}</Providers>
       </body>
-      <Script src="assets/scripts/open-close-modal.js" />
     </html>
   );
 }
