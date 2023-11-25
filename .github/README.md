@@ -1,8 +1,8 @@
 # **My Pomodoro**
 
-## **Access it**
+## **ARCHIVED**
 
-Access the site at [My Pomodoro](https://pomodoro.brunoan.dev).
+This project is archived, see it continuation in repo ![PomoTimer](https://github.com/brunoan99/pomotimer)
 
 <br/>
 
@@ -68,7 +68,7 @@ And to run use:
 npm run dev
 ```
 
-The site will be available in [localhost](https://localhost:3000)
+The project will be available in [localhost](https://localhost:3000)
 
 <br/>
 
